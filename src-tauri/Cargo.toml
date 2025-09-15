@@ -1,0 +1,27 @@
+[package]
+name = "desktop-planner"
+version = "1.0.0"
+description = "A privacy-first desktop planner application"
+authors = ["Desktop Planner Team"]
+license = "MIT"
+repository = ""
+default-run = "desktop-planner"
+edition = "2021"
+rust-version = "1.60"
+
+[build-dependencies]
+tauri-build = { version = "1.5.0", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "1.5.4", features = [ "path-all", "global-shortcut-all", "dialog-save", "dialog-open", "shell-open", "fs-all", "system-tray", "global-shortcut", "notification-all"] }
+rusqlite = { version = "0.30.0", features = ["bundled", "chrono"] }
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+tokio = { version = "1.0", features = ["full"] }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
