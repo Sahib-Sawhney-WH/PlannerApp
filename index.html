@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Desktop Planner</title>
+    <style>
+      /* CSS Custom Properties for theming */
+      :root[data-theme="dark"] {
+        --bg: #0E0F12;
+        --bg-elev1: #13151A;
+        --bg-elev2: #181B22;
+        --text: #E6E9EF;
+        --muted: #AAB2BF;
+        --subtle: #7E8695;
+        --accent: #4DA3FF;
+        --success: #4CC38A;
+        --warn: #F5D90A;
+        --danger: #E5484D;
+        --border: #242833;
+        --ring: #2B3240;
+        --card: #12141A;
+        --tag-impl: #7DD3FC;
+        --tag-presales: #FCA5A5;
+        --tag-signed: #A7F3D0;
+        --todo: #8AB4F8;
+        --doing: #FBC02D;
+        --blocked: #FF6D6D;
+        --done: #6EE7B7;
+        --radius: 16px;
+        --shadow: 0 8px 24px rgba(0,0,0,.25);
+        --focus: 0 0 0 3px rgba(77,163,255,.35);
+      }
+
+      :root[data-theme="light"] {
+        --bg: #FFFFFF;
+        --bg-elev1: #F8F9FA;
+        --bg-elev2: #F1F3F4;
+        --text: #1F2937;
+        --muted: #6B7280;
+        --subtle: #9CA3AF;
+        --accent: #2563EB;
+        --success: #059669;
+        --warn: #D97706;
+        --danger: #DC2626;
+        --border: #E5E7EB;
+        --ring: #D1D5DB;
+        --card: #FFFFFF;
+        --tag-impl: #3B82F6;
+        --tag-presales: #EF4444;
+        --tag-signed: #10B981;
+        --todo: #3B82F6;
+        --doing: #F59E0B;
+        --blocked: #EF4444;
+        --done: #10B981;
+        --radius: 16px;
+        --shadow: 0 8px 24px rgba(0,0,0,.1);
+        --focus: 0 0 0 3px rgba(37,99,235,.2);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, 'Segoe UI Variable', system-ui, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        font-size: 15px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Respect user's motion preferences */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Focus styles for accessibility */
+      *:focus-visible {
+        outline: none;
+        box-shadow: var(--focus);
+      }
+
+      /* Scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--bg-elev1);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--ring);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

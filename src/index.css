@@ -1,0 +1,211 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables for theming */
+:root {
+  /* Light theme colors */
+  --bg: 0 0% 100%;
+  --bg-elev1: 210 40% 98%;
+  --bg-elev2: 210 40% 96%;
+  --text: 222 84% 5%;
+  --muted: 215 16% 47%;
+  --subtle: 215 20% 65%;
+  --accent: 217 91% 60%;
+  --success: 142 76% 36%;
+  --warn: 38 92% 50%;
+  --danger: 0 84% 60%;
+  --border: 214 32% 91%;
+  --ring: 215 28% 84%;
+  --card: 0 0% 100%;
+  
+  /* Tag colors */
+  --tag-impl: 142 76% 36%;
+  --tag-presales: 38 92% 50%;
+  --tag-signed: 217 91% 60%;
+  
+  /* Status colors */
+  --todo: 215 16% 47%;
+  --doing: 217 91% 60%;
+  --blocked: 0 84% 60%;
+  --done: 142 76% 36%;
+  
+  /* Other variables */
+  --radius: 0.5rem;
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --focus: 0 0 0 2px rgb(59 130 246 / 0.5);
+}
+
+[data-theme="dark"] {
+  /* Dark theme colors */
+  --bg: 240 10% 4%;
+  --bg-elev1: 240 6% 10%;
+  --bg-elev2: 240 5% 16%;
+  --text: 0 0% 98%;
+  --muted: 240 5% 65%;
+  --subtle: 240 4% 46%;
+  --accent: 239 84% 67%;
+  --success: 142 76% 36%;
+  --warn: 38 92% 50%;
+  --danger: 0 84% 60%;
+  --border: 240 6% 16%;
+  --ring: 240 5% 26%;
+  --card: 240 6% 10%;
+  
+  /* Tag colors */
+  --tag-impl: 142 76% 36%;
+  --tag-presales: 38 92% 50%;
+  --tag-signed: 239 84% 67%;
+  
+  /* Status colors */
+  --todo: 240 5% 65%;
+  --doing: 239 84% 67%;
+  --blocked: 0 84% 60%;
+  --done: 142 76% 36%;
+}
+
+/* Additional global styles */
+@layer base {
+  html {
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  
+  body {
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+}
+
+@layer components {
+  /* Button variants */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+  
+  .btn-primary {
+    @apply bg-accent text-white hover:opacity-90;
+  }
+  
+  .btn-secondary {
+    @apply bg-bg-elev1 text-text hover:bg-bg-elev2 border border-border;
+  }
+  
+  .btn-ghost {
+    @apply hover:bg-bg-elev1 hover:text-text;
+  }
+  
+  .btn-danger {
+    @apply bg-danger text-white hover:opacity-90;
+  }
+  
+  /* Input styles */
+  .input {
+    @apply flex h-10 w-full rounded-lg border border-border bg-bg-elev1 px-3 py-2 text-sm ring-offset-bg file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  
+  /* Card styles */
+  .card {
+    @apply rounded-lg border border-border bg-card p-6 shadow-sm;
+  }
+  
+  /* Tag styles */
+  .tag {
+    @apply inline-flex items-center rounded-pill px-2.5 py-0.5 text-xs font-medium;
+  }
+  
+  .tag-impl {
+    @apply bg-tag-impl/20 text-tag-impl;
+  }
+  
+  .tag-presales {
+    @apply bg-tag-presales/20 text-tag-presales;
+  }
+  
+  .tag-signed {
+    @apply bg-tag-signed/20 text-tag-signed;
+  }
+  
+  /* Status indicators */
+  .status-dot {
+    @apply inline-block h-2 w-2 rounded-full;
+  }
+  
+  .status-todo {
+    @apply bg-todo;
+  }
+  
+  .status-doing {
+    @apply bg-doing;
+  }
+  
+  .status-blocked {
+    @apply bg-blocked;
+  }
+  
+  .status-done {
+    @apply bg-done;
+  }
+  
+  /* Task row styles */
+  .task-row {
+    @apply flex items-center gap-3 p-3 rounded-lg border border-transparent hover:border-border hover:bg-bg-elev1 transition-colors;
+  }
+  
+  .task-row.comfortable {
+    @apply h-14;
+  }
+  
+  .task-row.compact {
+    @apply h-11 p-2;
+  }
+  
+  /* Sidebar styles */
+  .sidebar {
+    @apply flex flex-col bg-bg-elev1 border-r border-border transition-all duration-200;
+  }
+  
+  .sidebar.collapsed {
+    @apply w-18;
+  }
+  
+  .sidebar.expanded {
+    @apply w-60;
+  }
+  
+  /* Drawer styles */
+  .drawer {
+    @apply fixed right-0 top-0 h-full w-120 bg-bg-elev1 border-l border-border shadow-lg transform transition-transform duration-200 z-50;
+  }
+  
+  .drawer.open {
+    @apply translate-x-0;
+  }
+  
+  .drawer.closed {
+    @apply translate-x-full;
+  }
+  
+  /* Scrollbar styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) var(--bg-elev1);
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: var(--bg-elev1);
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: var(--ring);
+  }
+}
+
