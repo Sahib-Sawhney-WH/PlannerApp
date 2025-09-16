@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
   ];
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -180,7 +180,7 @@ const Dashboard: React.FC = () => {
   );
 };
 
-// Metric Card Component
+// Metric Card Component - FIXED VERSION
 interface MetricCardProps {
   title: string;
   value: number;
@@ -198,17 +198,17 @@ const MetricCard: React.FC<MetricCardProps> = ({ title, value, subtitle, icon: I
   };
 
   return (
-    <div className="card">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+    <div className="card p-4 min-h-[120px] flex flex-col justify-between">
+      <div className="flex items-start justify-between">
+        <div className="flex-1 min-w-0 pr-3">
+          <p className="text-sm font-medium text-muted-foreground truncate">{title}</p>
           <p className="text-2xl font-bold text-foreground mt-1">{value}</p>
-          <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
         </div>
-        <div className={cn('p-3 rounded-lg', colorClasses[color])}>
+        <div className={cn('p-3 rounded-lg flex-shrink-0', colorClasses[color])}>
           <Icon className="w-6 h-6" />
         </div>
       </div>
+      <p className="text-xs text-muted-foreground mt-2 truncate" title={subtitle}>{subtitle}</p>
     </div>
   );
 };
@@ -290,3 +290,4 @@ const getStatusColor = (status: string) => {
 };
 
 export default Dashboard;
+

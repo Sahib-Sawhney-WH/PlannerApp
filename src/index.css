@@ -119,9 +119,9 @@
 }
 
 @layer components {
-  /* Button styles */
+  /* Button styles - FIXED VERSION */
   .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 whitespace-nowrap px-4 py-2 min-w-fit;
   }
 
   .btn-primary {
@@ -155,7 +155,7 @@
 
   /* Card styles */
   .card {
-    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm p-6;
   }
 
   .card-header {
@@ -178,9 +178,9 @@
     @apply flex items-center p-6 pt-0;
   }
 
-  /* Badge styles */
+  /* Badge styles - FIXED VERSION */
   .badge {
-    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 whitespace-nowrap;
   }
 
   .badge-default {
@@ -301,47 +301,49 @@
   @apply border-l-4 border-l-red-400;
 }
 
+/* Status badges - FIXED VERSION */
 .status-todo {
-  @apply bg-blue-100 text-blue-800;
+  @apply bg-blue-100 text-blue-800 whitespace-nowrap;
 }
 
 .status-doing {
-  @apply bg-yellow-100 text-yellow-800;
+  @apply bg-yellow-100 text-yellow-800 whitespace-nowrap;
 }
 
 .status-done {
-  @apply bg-green-100 text-green-800;
+  @apply bg-green-100 text-green-800 whitespace-nowrap;
 }
 
 .status-blocked {
-  @apply bg-red-100 text-red-800;
+  @apply bg-red-100 text-red-800 whitespace-nowrap;
 }
 
 .status-inbox {
-  @apply bg-gray-100 text-gray-800;
+  @apply bg-gray-100 text-gray-800 whitespace-nowrap;
 }
 
 :root[data-theme="dark"] .status-todo,
 .dark .status-todo {
-  @apply bg-blue-900 text-blue-200;
+  @apply bg-blue-900 text-blue-200 whitespace-nowrap;
 }
 
 :root[data-theme="dark"] .status-doing,
 .dark .status-doing {
-  @apply bg-yellow-900 text-yellow-200;
+  @apply bg-yellow-900 text-yellow-200 whitespace-nowrap;
 }
 
 :root[data-theme="dark"] .status-done,
 .dark .status-done {
-  @apply bg-green-900 text-green-200;
+  @apply bg-green-900 text-green-200 whitespace-nowrap;
 }
 
 :root[data-theme="dark"] .status-blocked,
 .dark .status-blocked {
-  @apply bg-red-900 text-red-200;
+  @apply bg-red-900 text-red-200 whitespace-nowrap;
 }
 
 :root[data-theme="dark"] .status-inbox,
 .dark .status-inbox {
-  @apply bg-gray-700 text-gray-200;
+  @apply bg-gray-700 text-gray-200 whitespace-nowrap;
 }
+
