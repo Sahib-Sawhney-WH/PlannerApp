@@ -639,4 +639,3 @@ function getStageColor(stage: string): string {
 }
 
 export default Opportunities;
-

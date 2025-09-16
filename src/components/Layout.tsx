@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppStore } from '@/store';
+import { useAppStore } from '@/store/mock';
 import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 import Drawer from './Drawer';
@@ -15,7 +15,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { density } = theme;
 
   return (
-    <div className="flex h-screen bg-bg text-text overflow-hidden">
+    <div className="flex h-screen bg-background text-foreground overflow-hidden">
       {/* Sidebar */}
       <Sidebar />
       
@@ -27,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Main content */}
         <main 
           className={cn(
-            "flex-1 overflow-hidden",
+            "flex-1 overflow-hidden bg-background",
             density === 'compact' ? 'p-4' : 'p-6'
           )}
         >
@@ -50,4 +50,3 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 };
 
 export default Layout;
-

@@ -28,10 +28,10 @@ function App() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-bg text-text">
+      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-danger mb-4">Application Error</h1>
-          <p className="text-muted mb-4">{error}</p>
+          <h1 className="text-2xl font-bold text-destructive mb-4">Application Error</h1>
+          <p className="text-muted-foreground mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="btn btn-primary"
@@ -45,7 +45,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="h-screen bg-bg text-text overflow-hidden">
+      <div className="h-screen bg-background text-foreground overflow-hidden">
         <Layout>
           <Routes>
             <Route path="/" element={<Dashboard />} />
@@ -67,4 +67,3 @@ function App() {
 }
 
 export default App;
-

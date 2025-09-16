@@ -476,4 +476,3 @@ const NoteViewer: React.FC<{
 };
 
 export default Notes;
-

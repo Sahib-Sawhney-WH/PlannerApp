@@ -247,4 +247,3 @@ export interface KeyboardShortcut {
   action: () => void;
   global?: boolean;
 }
-

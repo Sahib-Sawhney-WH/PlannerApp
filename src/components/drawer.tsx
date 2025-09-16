@@ -950,4 +950,3 @@ const SettingsPanel: React.FC = () => (
 );
 
 export default Drawer;
-

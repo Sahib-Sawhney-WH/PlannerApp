@@ -54,5 +54,3 @@ npm run tauri build
 ```
 
 This will create a production build of the application and package it into a native installer for your operating system.
-
-

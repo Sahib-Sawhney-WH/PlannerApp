@@ -500,4 +500,3 @@ const ShortcutSettings: React.FC = () => {
 };
 
 export default Settings;
-

@@ -149,4 +149,3 @@ export const downloadJSON = (data: any, filename: string) => {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };
-

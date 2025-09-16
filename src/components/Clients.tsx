@@ -436,4 +436,3 @@ const getStatusColor = (status: string) => {
 };
 
 export default Clients;
-

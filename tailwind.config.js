@@ -8,6 +8,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Shadcn/ui colors
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -41,6 +42,20 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        
+        // Custom app colors from index.html
+        'bg': 'var(--bg)',
+        'bg-elev1': 'var(--bg-elev1)',
+        'bg-elev2': 'var(--bg-elev2)',
+        'text': 'var(--text)',
+        'subtle': 'var(--subtle)',
+        'success': 'var(--success)',
+        'warn': 'var(--warn)',
+        'danger': 'var(--danger)',
+        'todo': 'var(--todo)',
+        'doing': 'var(--doing)',
+        'blocked': 'var(--blocked)',
+        'done': 'var(--done)',
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -51,4 +66,3 @@ export default {
   },
   plugins: [],
 }
-

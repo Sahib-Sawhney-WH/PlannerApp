@@ -41,12 +41,12 @@ const Dashboard: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-text">Dashboard</h1>
-            <p className="text-muted mt-1">
+            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+            <p className="text-muted-foreground mt-1">
               Welcome back! Here's what's happening today.
             </p>
           </div>
-          <div className="text-sm text-muted">
+          <div className="text-sm text-muted-foreground">
             {formatDate(new Date(), 'dddd, MMMM D, YYYY')}
           </div>
         </div>
@@ -191,19 +191,19 @@ interface MetricCardProps {
 
 const MetricCard: React.FC<MetricCardProps> = ({ title, value, subtitle, icon: Icon, color }) => {
   const colorClasses = {
-    accent: 'text-accent bg-accent/10',
-    success: 'text-success bg-success/10',
-    warn: 'text-warn bg-warn/10',
-    danger: 'text-danger bg-danger/10',
+    accent: 'text-primary bg-primary/10',
+    success: 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900/20',
+    warn: 'text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900/20',
+    danger: 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900/20',
   };
 
   return (
     <div className="card">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-muted">{title}</p>
-          <p className="text-2xl font-bold text-text mt-1">{value}</p>
-          <p className="text-xs text-muted mt-1">{subtitle}</p>
+          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{value}</p>
+          <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
         </div>
         <div className={cn('p-3 rounded-lg', colorClasses[color])}>
           <Icon className="w-6 h-6" />
@@ -228,17 +228,17 @@ const TaskRow: React.FC<TaskRowProps> = ({ task }) => {
   return (
     <div
       onClick={handleTaskClick}
-      className="flex items-center gap-3 p-3 rounded-lg hover:bg-bg-elev1 cursor-pointer transition-colors"
+      className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted cursor-pointer transition-colors"
     >
       <div className={cn('w-2 h-2 rounded-full', getStatusColor(task.status))} />
       <div className="flex-1 min-w-0">
-        <div className="font-medium text-sm truncate">{task.title}</div>
-        <div className="text-xs text-muted">
+        <div className="font-medium text-sm truncate text-foreground">{task.title}</div>
+        <div className="text-xs text-muted-foreground">
           {task.due && formatDate(task.due, 'h:mm A')}
         </div>
       </div>
       {task.priority && task.priority >= 4 && (
-        <AlertCircle className="w-4 h-4 text-danger" />
+        <AlertCircle className="w-4 h-4 text-destructive" />
       )}
     </div>
   );
@@ -265,11 +265,11 @@ const NextStepItem: React.FC<NextStepItemProps> = ({ item }) => {
   };
 
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg bg-bg-elev1">
-      <div className="w-2 h-2 rounded-full bg-accent mt-2 flex-shrink-0" />
+    <div className="flex items-start gap-3 p-3 rounded-lg bg-muted">
+      <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium truncate">{getNextStep()}</div>
-        <div className="text-xs text-muted">
+        <div className="text-sm font-medium truncate text-foreground">{getNextStep()}</div>
+        <div className="text-xs text-muted-foreground">
           {getItemType()} • {item.nextStepDue && formatDate(item.nextStepDue, 'MMM D')}
         </div>
       </div>
@@ -280,14 +280,13 @@ const NextStepItem: React.FC<NextStepItemProps> = ({ item }) => {
 // Helper function to get status color
 const getStatusColor = (status: string) => {
   const colors = {
-    'Inbox': 'bg-muted',
-    'Todo': 'bg-todo',
-    'Doing': 'bg-doing',
-    'Blocked': 'bg-blocked',
-    'Done': 'bg-done',
+    'Inbox': 'bg-muted-foreground',
+    'Todo': 'bg-blue-500',
+    'Doing': 'bg-yellow-500',
+    'Blocked': 'bg-red-500',
+    'Done': 'bg-green-500',
   };
-  return colors[status as keyof typeof colors] || 'bg-muted';
+  return colors[status as keyof typeof colors] || 'bg-muted-foreground';
 };
 
 export default Dashboard;
-

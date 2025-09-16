@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  /* Light theme (default) */
   :root {
+    /* Shadcn/ui variables */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -24,9 +26,37 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
+    
+    /* Custom app variables for light theme */
+    --bg: #FFFFFF;
+    --bg-elev1: #F8F9FA;
+    --bg-elev2: #F1F3F4;
+    --text: #1F2937;
+    --muted: #6B7280;
+    --subtle: #9CA3AF;
+    --accent: #2563EB;
+    --success: #059669;
+    --warn: #D97706;
+    --danger: #DC2626;
+    --border: #E5E7EB;
+    --ring: #D1D5DB;
+    --card: #FFFFFF;
+    --tag-impl: #3B82F6;
+    --tag-presales: #EF4444;
+    --tag-signed: #10B981;
+    --todo: #3B82F6;
+    --doing: #F59E0B;
+    --blocked: #EF4444;
+    --done: #10B981;
+    --radius: 16px;
+    --shadow: 0 8px 24px rgba(0,0,0,.1);
+    --focus: 0 0 0 3px rgba(37,99,235,.2);
   }
 
+  /* Dark theme */
+  :root[data-theme="dark"],
   .dark {
+    /* Shadcn/ui variables for dark */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -46,6 +76,31 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 94.1%;
+    
+    /* Custom app variables for dark theme */
+    --bg: #0E0F12;
+    --bg-elev1: #1A1B23;
+    --bg-elev2: #252631;
+    --text: #FFFFFF;
+    --muted: #B4B8C5;
+    --subtle: #8B92A5;
+    --accent: #4DA3FF;
+    --success: #4CC38A;
+    --warn: #F5D90A;
+    --danger: #E5484D;
+    --border: #3A3B47;
+    --ring: #4A4B57;
+    --card: #1F2028;
+    --tag-impl: #7DD3FC;
+    --tag-presales: #FCA5A5;
+    --tag-signed: #A7F3D0;
+    --todo: #8AB4F8;
+    --doing: #FBC02D;
+    --blocked: #FF6D6D;
+    --done: #6EE7B7;
+    --radius: 16px;
+    --shadow: 0 8px 24px rgba(0,0,0,.4);
+    --focus: 0 0 0 3px rgba(77,163,255,.35);
   }
 }
 
@@ -55,6 +110,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: Inter, 'Segoe UI Variable', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -138,6 +198,27 @@
   .badge-outline {
     @apply text-foreground;
   }
+
+  /* Form styles */
+  .form-group {
+    @apply space-y-2;
+  }
+
+  .form-label {
+    @apply text-sm font-medium text-foreground;
+  }
+
+  .form-input {
+    @apply input;
+  }
+
+  .form-textarea {
+    @apply flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .form-select {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
 }
 
 /* Custom scrollbar */
@@ -160,10 +241,12 @@
 }
 
 /* Dark mode scrollbar */
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb,
 .dark ::-webkit-scrollbar-thumb {
   background: hsl(var(--muted-foreground) / 0.4);
 }
 
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover,
 .dark ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.6);
 }
@@ -219,22 +302,46 @@
 }
 
 .status-todo {
-  @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+  @apply bg-blue-100 text-blue-800;
 }
 
 .status-doing {
-  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  @apply bg-yellow-100 text-yellow-800;
 }
 
 .status-done {
-  @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+  @apply bg-green-100 text-green-800;
 }
 
 .status-blocked {
-  @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+  @apply bg-red-100 text-red-800;
 }
 
 .status-inbox {
-  @apply bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200;
+  @apply bg-gray-100 text-gray-800;
 }
 
+:root[data-theme="dark"] .status-todo,
+.dark .status-todo {
+  @apply bg-blue-900 text-blue-200;
+}
+
+:root[data-theme="dark"] .status-doing,
+.dark .status-doing {
+  @apply bg-yellow-900 text-yellow-200;
+}
+
+:root[data-theme="dark"] .status-done,
+.dark .status-done {
+  @apply bg-green-900 text-green-200;
+}
+
+:root[data-theme="dark"] .status-blocked,
+.dark .status-blocked {
+  @apply bg-red-900 text-red-200;
+}
+
+:root[data-theme="dark"] .status-inbox,
+.dark .status-inbox {
+  @apply bg-gray-700 text-gray-200;
+}

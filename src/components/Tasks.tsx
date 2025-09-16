@@ -420,4 +420,3 @@ const KanbanCard: React.FC<KanbanCardProps> = ({ task }) => {
 };
 
 export default Tasks;
-

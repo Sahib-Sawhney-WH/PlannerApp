@@ -731,4 +731,3 @@ const TimeEntryViewer: React.FC<{
 };
 
 export default TimeTracking;
-

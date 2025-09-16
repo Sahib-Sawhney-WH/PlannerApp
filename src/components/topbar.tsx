@@ -8,24 +8,29 @@ import {
   Moon,
   Sun,
   Settings,
-  FileText,
+  CheckSquare,
   FolderOpen,
   Users,
-  CheckSquare,
+  X,
 } from 'lucide-react';
 
 const TopBar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null);
   
   const { 
     theme, 
-    toggleTheme,
+    setTheme, 
     search, 
     clearSearch, 
     searchResults,
-    openDrawer 
+    openDrawer,
+    tasks,
+    projects,
+    clients,
   } = useAppStore();
 
   // Global keyboard shortcuts
@@ -43,17 +48,26 @@ const TopBar: React.FC = () => {
         clearSearch();
         searchInputRef.current?.blur();
       }
-      
-      // Ctrl/Cmd + N for quick add
-      if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
-        e.preventDefault();
-        handleQuickAdd();
-      }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [searchFocused, clearSearch]);
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchInputRef.current && !searchInputRef.current.contains(event.target as Node)) {
+        setSearchFocused(false);
+      }
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -70,8 +84,23 @@ const TopBar: React.FC = () => {
     openDrawer('task-form');
   };
 
+  const toggleTheme = () => {
+    const newMode = theme.mode === 'dark' ? 'light' : 'dark';
+    setTheme({ mode: newMode });
+    // Update document theme attribute
+    document.documentElement.setAttribute('data-theme', newMode);
+  };
+
+  const handleNotificationClick = () => {
+    setShowNotifications(!showNotifications);
+  };
+
   const handleSearchResultClick = (result: any) => {
-    // Navigate to the result or open in drawer
+    setSearchQuery('');
+    clearSearch();
+    searchInputRef.current?.blur();
+    
+    // Open the appropriate drawer based on result type
     switch (result.type) {
       case 'task':
         openDrawer({ type: 'task-details', data: result });
@@ -82,61 +111,60 @@ const TopBar: React.FC = () => {
       case 'client':
         openDrawer({ type: 'client-details', data: result });
         break;
-      case 'note':
-        openDrawer({ type: 'note-details', data: result });
-        break;
-      default:
-        console.log('Unknown result type:', result.type);
     }
+  };
+
+  // Get notifications (overdue tasks, upcoming deadlines, etc.)
+  const getNotifications = () => {
+    const notifications = [];
+    const now = new Date();
+    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+    // Overdue tasks
+    const overdueTasks = tasks.filter(task => 
+      task.due && new Date(task.due) < now && task.status !== 'Done'
+    );
     
-    // Clear search after selection
-    setSearchQuery('');
-    clearSearch();
-    searchInputRef.current?.blur();
+    // Tasks due soon
+    const dueSoonTasks = tasks.filter(task => 
+      task.due && new Date(task.due) <= tomorrow && new Date(task.due) >= now && task.status !== 'Done'
+    );
+
+    overdueTasks.forEach(task => {
+      notifications.push({
+        id: `overdue-${task.id}`,
+        type: 'overdue',
+        title: 'Overdue Task',
+        message: task.title,
+        time: task.due,
+        icon: CheckSquare,
+        color: 'text-red-500',
+      });
+    });
+
+    dueSoonTasks.forEach(task => {
+      notifications.push({
+        id: `due-soon-${task.id}`,
+        type: 'due-soon',
+        title: 'Due Soon',
+        message: task.title,
+        time: task.due,
+        icon: CheckSquare,
+        color: 'text-yellow-500',
+      });
+    });
+
+    return notifications.slice(0, 5); // Limit to 5 notifications
   };
 
-  const getResultIcon = (type: string) => {
-    switch (type) {
-      case 'task':
-        return CheckSquare;
-      case 'project':
-        return FolderOpen;
-      case 'client':
-        return Users;
-      case 'note':
-        return FileText;
-      default:
-        return FileText;
-    }
-  };
-
-  const getResultTypeColor = (type: string) => {
-    switch (type) {
-      case 'task':
-        return 'text-accent';
-      case 'project':
-        return 'text-success';
-      case 'client':
-        return 'text-warn';
-      case 'note':
-        return 'text-muted';
-      default:
-        return 'text-muted';
-    }
-  };
+  const notifications = getNotifications();
 
   return (
-    <header 
-      className="top-bar"
-      style={{
-        backgroundColor: 'hsl(var(--bg))',
-        borderBottom: '1px solid hsl(var(--border))'
-      }}
-    >
+    <header className="flex items-center justify-between px-6 py-3 border-b border-border bg-background">
       {/* Search */}
       <div className="flex-1 max-w-md relative">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             ref={searchInputRef}
             type="text"
@@ -144,248 +172,150 @@ const TopBar: React.FC = () => {
             value={searchQuery}
             onChange={handleSearchChange}
             onFocus={() => setSearchFocused(true)}
-            onBlur={(e) => {
-              // Delay blur to allow click on search results
-              setTimeout(() => setSearchFocused(false), 200);
-            }}
-            className="search-input"
-            style={{
-              width: '100%',
-              paddingLeft: '2.5rem',
-              paddingRight: '1rem',
-              paddingTop: '0.5rem',
-              paddingBottom: '0.5rem',
-              backgroundColor: 'hsl(var(--bg-elev2))',
-              border: '1px solid hsl(var(--border))',
-              borderRadius: '0.5rem',
-              fontSize: '0.875rem',
-              color: 'hsl(var(--text))',
-              outline: 'none',
-              transition: 'all 0.2s'
-            }}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+            className={cn(
+              'w-full pl-10 pr-4 py-2 bg-background border border-border rounded-lg',
+              'text-sm placeholder:text-muted-foreground text-foreground',
+              'focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent',
+              'transition-all duration-200'
+            )}
           />
-          {searchQuery && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <kbd 
-                className="px-1.5 py-0.5 text-xs rounded"
-                style={{
-                  backgroundColor: 'hsl(var(--border))',
-                  color: 'hsl(var(--muted))'
-                }}
-              >
-                ESC
-              </kbd>
-            </div>
-          )}
         </div>
         
-        {/* Search Results Dropdown - Fixed styling */}
-        {searchResults.length > 0 && searchFocused && (
-          <div 
-            className="search-results"
-            style={{
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              right: 0,
-              marginTop: '0.25rem',
-              backgroundColor: 'hsl(var(--bg-elev1))',
-              border: '1px solid hsl(var(--border))',
-              borderRadius: '0.5rem',
-              boxShadow: '0 8px 24px rgba(0,0,0,.25)',
-              zIndex: 1200,
-              maxHeight: '20rem',
-              overflowY: 'auto'
-            }}
-          >
-            {searchResults.map((result, index) => {
-              const Icon = getResultIcon(result.type);
-              const typeColor = getResultTypeColor(result.type);
-              
-              return (
-                <div
-                  key={`${result.type}-${result.id}-${index}`}
-                  onClick={() => handleSearchResultClick(result)}
-                  className="search-result-item"
-                  style={{
-                    padding: '0.75rem',
-                    cursor: 'pointer',
-                    borderBottom: index < searchResults.length - 1 ? '1px solid hsl(var(--border))' : 'none',
-                    backgroundColor: 'transparent'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'hsl(var(--bg-elev2))';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon 
-                      className={cn('w-4 h-4 flex-shrink-0', typeColor)} 
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div 
-                        className="font-medium text-sm truncate"
-                        style={{ color: 'hsl(var(--text))' }}
-                      >
-                        {result.title}
-                      </div>
-                      {result.description && (
-                        <div 
-                          className="text-xs truncate mt-1"
-                          style={{ color: 'hsl(var(--muted))' }}
-                        >
-                          {result.description}
-                        </div>
-                      )}
-                      <div 
-                        className="text-xs capitalize mt-1"
-                        style={{ color: 'hsl(var(--subtle))' }}
-                      >
-                        {result.type}
-                      </div>
-                    </div>
-                    <div 
-                      className="text-xs"
-                      style={{ color: 'hsl(var(--subtle))' }}
-                    >
-                      {Math.round((result.relevance || 0) * 100)}% match
-                    </div>
+        {/* Search Results */}
+        {searchQuery && searchResults.length > 0 && searchFocused && (
+          <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto">
+            {searchResults.map((result, index) => (
+              <div
+                key={index}
+                onClick={() => handleSearchResultClick(result)}
+                className="p-3 hover:bg-muted cursor-pointer border-b border-border last:border-b-0 flex items-center space-x-3"
+              >
+                <div className="flex-shrink-0">
+                  {result.type === 'task' && <CheckSquare className="w-4 h-4 text-primary" />}
+                  {result.type === 'project' && <FolderOpen className="w-4 h-4 text-primary" />}
+                  {result.type === 'client' && <Users className="w-4 h-4 text-primary" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-foreground text-sm truncate">
+                    {result.title}
+                  </div>
+                  <div className="text-xs text-muted-foreground capitalize">
+                    {result.type}
                   </div>
                 </div>
-              );
-            })}
-            
-            {/* Search footer */}
-            <div 
-              className="px-3 py-2 border-t text-xs"
-              style={{
-                borderTop: '1px solid hsl(var(--border))',
-                backgroundColor: 'hsl(var(--bg-elev2))',
-                color: 'hsl(var(--muted))'
-              }}
-            >
-              {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found
-            </div>
+              </div>
+            ))}
           </div>
         )}
-        
-        {/* No results message */}
-        {searchQuery.trim() && searchResults.length === 0 && searchFocused && (
-          <div 
-            className="search-results"
-            style={{
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              right: 0,
-              marginTop: '0.25rem',
-              backgroundColor: 'hsl(var(--bg-elev1))',
-              border: '1px solid hsl(var(--border))',
-              borderRadius: '0.5rem',
-              boxShadow: '0 8px 24px rgba(0,0,0,.25)',
-              zIndex: 1200,
-              padding: '1rem',
-              textAlign: 'center'
-            }}
-          >
-            <div style={{ color: 'hsl(var(--muted))' }}>
-              No results found for "{searchQuery}"
-            </div>
+
+        {/* No Results */}
+        {searchQuery && searchResults.length === 0 && searchFocused && (
+          <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-xl z-50 p-4 text-center text-muted-foreground text-sm">
+            No results found for "{searchQuery}"
           </div>
         )}
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2 ml-4">
+      <div className="flex items-center space-x-2 ml-4">
         {/* Quick Add */}
         <button
           onClick={handleQuickAdd}
-          className="p-2 rounded-lg transition-colors"
-          style={{
-            color: 'hsl(var(--text))',
-            backgroundColor: 'transparent'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'hsl(var(--bg-elev2))';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-          }}
-          title="Quick Add (Ctrl+N)"
+          className="p-2 hover:bg-muted rounded-lg transition-colors"
+          title="Quick Add Task (Ctrl+N)"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 text-muted-foreground hover:text-foreground" />
         </button>
 
         {/* Notifications */}
-        <button
-          className="p-2 rounded-lg transition-colors relative"
-          style={{
-            color: 'hsl(var(--text))',
-            backgroundColor: 'transparent'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'hsl(var(--bg-elev2))';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-          }}
-          title="Notifications"
-        >
-          <Bell className="w-4 h-4" />
-          <div 
-            className="absolute -top-1 -right-1 w-3 h-3 rounded-full text-xs flex items-center justify-center"
-            style={{
-              backgroundColor: 'hsl(var(--danger))',
-              color: 'white',
-              fontSize: '0.625rem'
-            }}
+        <div className="relative" ref={notificationRef}>
+          <button
+            onClick={handleNotificationClick}
+            className="p-2 hover:bg-muted rounded-lg transition-colors relative"
+            title="Notifications"
           >
-            3
-          </div>
-        </button>
+            <Bell className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+            {notifications.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full text-xs flex items-center justify-center text-destructive-foreground">
+                {notifications.length}
+              </span>
+            )}
+          </button>
+
+          {/* Notifications Dropdown */}
+          {showNotifications && (
+            <div className="absolute right-0 top-full mt-2 w-80 bg-background border border-border rounded-lg shadow-xl z-50">
+              <div className="p-3 border-b border-border">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-foreground">Notifications</h3>
+                  <button
+                    onClick={() => setShowNotifications(false)}
+                    className="p-1 hover:bg-muted rounded"
+                  >
+                    <X className="w-3 h-3 text-muted-foreground" />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="max-h-64 overflow-y-auto">
+                {notifications.length > 0 ? (
+                  notifications.map((notification) => {
+                    const Icon = notification.icon;
+                    return (
+                      <div
+                        key={notification.id}
+                        className="p-3 hover:bg-muted border-b border-border last:border-b-0"
+                      >
+                        <div className="flex items-start space-x-3">
+                          <Icon className={cn('w-4 h-4 mt-0.5', notification.color)} />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium text-foreground">
+                              {notification.title}
+                            </div>
+                            <div className="text-sm text-muted-foreground truncate">
+                              {notification.message}
+                            </div>
+                            {notification.time && (
+                              <div className="text-xs text-muted-foreground mt-1">
+                                {new Date(notification.time).toLocaleDateString()}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="p-4 text-center text-muted-foreground text-sm">
+                    No notifications
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-lg transition-colors"
-          style={{
-            color: 'hsl(var(--text))',
-            backgroundColor: 'transparent'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'hsl(var(--bg-elev2))';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-          }}
-          title={`Switch to ${theme.mode === 'dark' ? 'light' : 'dark'} mode`}
+          className="p-2 hover:bg-muted rounded-lg transition-colors"
+          title="Toggle Theme"
         >
           {theme.mode === 'dark' ? (
-            <Sun className="w-4 h-4" />
+            <Sun className="w-4 h-4 text-muted-foreground hover:text-foreground" />
           ) : (
-            <Moon className="w-4 h-4" />
+            <Moon className="w-4 h-4 text-muted-foreground hover:text-foreground" />
           )}
         </button>
 
         {/* Settings */}
         <button
-          onClick={() => openDrawer('settings')}
-          className="p-2 rounded-lg transition-colors"
-          style={{
-            color: 'hsl(var(--text))',
-            backgroundColor: 'transparent'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'hsl(var(--bg-elev2))';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-          }}
+          onClick={() => openDrawer({ type: 'settings' })}
+          className="p-2 hover:bg-muted rounded-lg transition-colors"
           title="Settings"
         >
-          <Settings className="w-4 h-4" />
+          <Settings className="w-4 h-4 text-muted-foreground hover:text-foreground" />
         </button>
       </div>
     </header>
@@ -393,4 +323,3 @@ const TopBar: React.FC = () => {
 };
 
 export default TopBar;
-
