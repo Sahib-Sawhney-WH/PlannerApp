@@ -81,4 +81,3 @@ INSERT OR IGNORE INTO settings (key, value, updated_at) VALUES
 ('notifications_enabled', 'true', '2024-01-01T00:00:00Z'),
 ('start_on_boot', 'false', '2024-01-01T00:00:00Z'),
 ('minimize_to_tray', 'true', '2024-01-01T00:00:00Z');
-

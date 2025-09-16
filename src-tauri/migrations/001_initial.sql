@@ -310,4 +310,3 @@ CREATE TRIGGER IF NOT EXISTS knowledge_items_fts_update AFTER UPDATE ON knowledg
     DELETE FROM knowledge_items_fts WHERE id = old.id;
     INSERT INTO knowledge_items_fts(id, title, description) VALUES (new.id, new.title, new.description);
 END;
-
