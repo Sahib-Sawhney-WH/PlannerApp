@@ -2,377 +2,239 @@
 @tailwind components;
 @tailwind utilities;
 
-/* CSS Variables for theming */
-:root {
-  /* Light theme colors */
-  --bg: 0 0% 100%;
-  --bg-elev1: 210 40% 98%;
-  --bg-elev2: 210 40% 96%;
-  --text: 222 84% 5%;
-  --muted: 215 16% 47%;
-  --subtle: 215 20% 65%;
-  --accent: 217 91% 60%;
-  --success: 142 76% 36%;
-  --warn: 38 92% 50%;
-  --danger: 0 84% 60%;
-  --border: 214 32% 91%;
-  --ring: 215 28% 84%;
-  --card: 0 0% 100%;
-  
-  /* Tag colors */
-  --tag-impl: 142 76% 36%;
-  --tag-presales: 38 92% 50%;
-  --tag-signed: 217 91% 60%;
-  
-  /* Status colors */
-  --todo: 215 16% 47%;
-  --doing: 217 91% 60%;
-  --blocked: 0 84% 60%;
-  --done: 142 76% 36%;
-  
-  /* Other variables */
-  --radius: 0.5rem;
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --focus: 0 0 0 2px rgb(59 130 246 / 0.5);
-}
-
-[data-theme="dark"] {
-  /* Dark theme colors - Fixed for better visibility */
-  --bg: 240 10% 4%;
-  --bg-elev1: 240 6% 10%;
-  --bg-elev2: 240 5% 16%;
-  --text: 0 0% 98%;
-  --muted: 240 5% 65%;
-  --subtle: 240 4% 46%;
-  --accent: 239 84% 67%;
-  --success: 142 76% 36%;
-  --warn: 38 92% 50%;
-  --danger: 0 84% 60%;
-  --border: 240 6% 20%;
-  --ring: 240 5% 26%;
-  --card: 240 6% 12%;
-  
-  /* Tag colors */
-  --tag-impl: 142 76% 36%;
-  --tag-presales: 38 92% 50%;
-  --tag-signed: 239 84% 67%;
-  
-  /* Status colors */
-  --todo: 240 5% 65%;
-  --doing: 239 84% 67%;
-  --blocked: 0 84% 60%;
-  --done: 142 76% 36%;
-}
-
-/* Additional global styles */
 @layer base {
-  html {
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
   }
-  
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
   body {
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    @apply bg-background text-foreground;
   }
 }
 
 @layer components {
-  /* Button variants */
+  /* Button styles */
   .btn {
-    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
-  
+
   .btn-primary {
-    @apply bg-accent text-white hover:opacity-90;
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
   }
-  
+
   .btn-secondary {
-    @apply bg-bg-elev1 text-text hover:bg-bg-elev2 border border-border;
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
   }
-  
+
+  .btn-destructive {
+    @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
+  }
+
+  .btn-outline {
+    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  }
+
   .btn-ghost {
-    @apply hover:bg-bg-elev1 hover:text-text;
+    @apply hover:bg-accent hover:text-accent-foreground;
   }
-  
-  .btn-danger {
-    @apply bg-danger text-white hover:opacity-90;
+
+  .btn-link {
+    @apply text-primary underline-offset-4 hover:underline;
   }
-  
+
   /* Input styles */
   .input {
-    @apply flex h-10 w-full rounded-lg border border-border bg-bg-elev1 px-3 py-2 text-sm ring-offset-bg file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
-  
-  /* Card styles - Fixed transparency */
+
+  /* Card styles */
   .card {
-    @apply rounded-lg border border-border bg-card p-6 shadow-sm;
-    background-color: hsl(var(--card)) !important;
-    opacity: 1 !important;
-  }
-  
-  /* Tag styles */
-  .tag {
-    @apply inline-flex items-center rounded-pill px-2.5 py-0.5 text-xs font-medium;
-  }
-  
-  .tag-impl {
-    @apply bg-tag-impl/20 text-tag-impl;
-  }
-  
-  .tag-presales {
-    @apply bg-tag-presales/20 text-tag-presales;
-  }
-  
-  .tag-signed {
-    @apply bg-tag-signed/20 text-tag-signed;
-  }
-  
-  /* Status indicators */
-  .status-dot {
-    @apply inline-block h-2 w-2 rounded-full;
-  }
-  
-  .status-todo {
-    @apply bg-todo;
-  }
-  
-  .status-doing {
-    @apply bg-doing;
-  }
-  
-  .status-blocked {
-    @apply bg-blocked;
-  }
-  
-  .status-done {
-    @apply bg-done;
-  }
-  
-  /* Task row styles */
-  .task-row {
-    @apply flex items-center gap-3 p-3 rounded-lg border border-transparent hover:border-border hover:bg-bg-elev1 transition-colors;
-  }
-  
-  .task-row.comfortable {
-    @apply h-14;
-  }
-  
-  .task-row.compact {
-    @apply h-11 p-2;
-  }
-  
-  /* Sidebar styles - Fixed transparency issues */
-  .sidebar {
-    @apply flex flex-col border-r border-border transition-all duration-200;
-    background-color: hsl(var(--bg-elev1)) !important;
-    opacity: 1 !important;
-    backdrop-filter: none !important;
-  }
-  
-  .sidebar.collapsed {
-    @apply w-18;
-  }
-  
-  .sidebar.expanded {
-    @apply w-60;
-  }
-  
-  /* Drawer styles - Fixed transparency issues */
-  .drawer {
-    @apply fixed right-0 top-0 h-full w-120 border-l border-border shadow-lg transform transition-transform duration-200 z-50;
-    background-color: hsl(var(--bg-elev1)) !important;
-    opacity: 1 !important;
-    backdrop-filter: none !important;
-  }
-  
-  .drawer.open {
-    @apply translate-x-0;
-  }
-  
-  .drawer.closed {
-    @apply translate-x-full;
-  }
-  
-  /* Modal overlay - Fixed dimming issue */
-  .modal-overlay {
-    @apply fixed inset-0 z-40;
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    backdrop-filter: blur(2px);
-  }
-  
-  /* Search results container - Fixed transparency */
-  .search-results {
-    @apply absolute top-full left-0 right-0 mt-1 max-h-96 overflow-y-auto rounded-lg border border-border shadow-lg z-50;
-    background-color: hsl(var(--bg-elev1)) !important;
-    opacity: 1 !important;
-  }
-  
-  .search-result-item {
-    @apply p-3 hover:bg-bg-elev2 cursor-pointer border-b border-border last:border-b-0;
-    background-color: transparent;
-  }
-  
-  .search-result-item:hover {
-    background-color: hsl(var(--bg-elev2)) !important;
-  }
-  
-  /* Dropdown menus - Fixed transparency */
-  .dropdown-menu {
-    @apply absolute z-50 min-w-32 rounded-lg border border-border shadow-lg;
-    background-color: hsl(var(--bg-elev1)) !important;
-    opacity: 1 !important;
-  }
-  
-  .dropdown-item {
-    @apply px-3 py-2 text-sm cursor-pointer hover:bg-bg-elev2 first:rounded-t-lg last:rounded-b-lg;
-  }
-  
-  /* Form elements - Better visibility */
-  .form-group {
-    @apply space-y-2;
-  }
-  
-  .form-label {
-    @apply block text-sm font-medium text-text;
-  }
-  
-  .form-input {
-    @apply w-full px-3 py-2 border border-border rounded-lg bg-bg-elev1 text-text placeholder-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent;
-  }
-  
-  .form-textarea {
-  @apply w-full px-3 py-2 border border-border rounded-lg bg-bg-elev1 text-text placeholder-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent resize-y min-h-20;
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
   }
 
-  
-  .form-select {
-    @apply w-full px-3 py-2 border border-border rounded-lg bg-bg-elev1 text-text focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent;
+  .card-header {
+    @apply flex flex-col space-y-1.5 p-6;
   }
-  
-  /* Navigation items - Better visibility */
-  .nav-item {
-    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-text hover:bg-bg-elev2 transition-colors;
+
+  .card-title {
+    @apply text-2xl font-semibold leading-none tracking-tight;
   }
-  
-  .nav-item.active {
-    @apply bg-accent/10 text-accent;
+
+  .card-description {
+    @apply text-sm text-muted-foreground;
   }
-  
-  /* Top bar - Fixed transparency */
-  .top-bar {
-    @apply flex items-center justify-between px-6 py-4 border-b border-border;
-    background-color: hsl(var(--bg)) !important;
-    opacity: 1 !important;
+
+  .card-content {
+    @apply p-6 pt-0;
   }
-  
-  /* Content area - Proper background */
-  .content-area {
-    @apply flex-1 overflow-hidden;
-    background-color: hsl(var(--bg)) !important;
+
+  .card-footer {
+    @apply flex items-center p-6 pt-0;
   }
-  
-  .content-inner {
-    @apply h-full p-6 overflow-y-auto;
+
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
   }
-  
-  /* Scrollbar styles */
-  .scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--border)) hsl(var(--bg-elev1));
+
+  .badge-default {
+    @apply border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
   }
-  
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+
+  .badge-secondary {
+    @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
   }
-  
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: hsl(var(--bg-elev1));
+
+  .badge-destructive {
+    @apply border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80;
   }
-  
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
-    border-radius: 3px;
-  }
-  
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--ring));
-  }
-  
-  /* Fix for any remaining transparency issues */
-  .bg-transparent {
-    background-color: transparent !important;
-  }
-  
-  /* Ensure all text is visible */
-  .text-transparent {
-    color: hsl(var(--text)) !important;
-  }
-  
-  /* Loading states */
-  .loading-spinner {
-    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-accent;
-  }
-  
-  /* Error states */
-  .error-message {
-    @apply p-4 rounded-lg bg-danger/10 border border-danger/20 text-danger;
-  }
-  
-  /* Success states */
-  .success-message {
-    @apply p-4 rounded-lg bg-success/10 border border-success/20 text-success;
-  }
-  
-  /* Warning states */
-  .warning-message {
-    @apply p-4 rounded-lg bg-warn/10 border border-warn/20 text-warn;
-  }
-  
-  /* Info states */
-  .info-message {
-    @apply p-4 rounded-lg bg-accent/10 border border-accent/20 text-accent;
+
+  .badge-outline {
+    @apply text-foreground;
   }
 }
 
-/* Additional fixes for specific components that might have transparency issues */
-.drawer-content {
-  background-color: hsl(var(--bg-elev1)) !important;
-  opacity: 1 !important;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.sidebar-content {
-  background-color: hsl(var(--bg-elev1)) !important;
-  opacity: 1 !important;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.modal-content {
-  background-color: hsl(var(--bg-elev1)) !important;
-  opacity: 1 !important;
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
 }
 
-.search-input {
-  background-color: hsl(var(--bg-elev1)) !important;
-  color: hsl(var(--text)) !important;
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
 }
 
-.search-input::placeholder {
-  color: hsl(var(--muted)) !important;
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.4);
 }
 
-/* Ensure proper z-index layering */
-.z-drawer {
-  z-index: 1000;
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.6);
 }
 
-.z-modal {
-  z-index: 1100;
+/* Focus styles */
+.focus-visible {
+  @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
 }
 
-.z-dropdown {
-  z-index: 1200;
+/* Animation utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.z-tooltip {
-  z-index: 1300;
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Custom utilities for the planner app */
+.sidebar-item {
+  @apply flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground;
+}
+
+.sidebar-item.active {
+  @apply bg-accent text-accent-foreground;
+}
+
+.task-priority-1 {
+  @apply border-l-4 border-l-gray-400;
+}
+
+.task-priority-2 {
+  @apply border-l-4 border-l-blue-400;
+}
+
+.task-priority-3 {
+  @apply border-l-4 border-l-yellow-400;
+}
+
+.task-priority-4 {
+  @apply border-l-4 border-l-orange-400;
+}
+
+.task-priority-5 {
+  @apply border-l-4 border-l-red-400;
+}
+
+.status-todo {
+  @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+}
+
+.status-doing {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+}
+
+.status-done {
+  @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+}
+
+.status-blocked {
+  @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+}
+
+.status-inbox {
+  @apply bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200;
 }
 

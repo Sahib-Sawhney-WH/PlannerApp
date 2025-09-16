@@ -10,6 +10,9 @@ import {
   Download, 
   Upload,
   Trash2,
+  Check,
+  Monitor,
+  Smartphone,
 } from 'lucide-react';
 
 const Settings: React.FC = () => {
@@ -41,7 +44,7 @@ const Settings: React.FC = () => {
   return (
     <div className="flex h-full">
       {/* Sidebar */}
-      <div className="w-64 border-r border-border bg-muted/30">
+      <div className="w-64 border-r border-border bg-bg-elev1">
         <div className="p-6">
           <div className="flex items-center space-x-2 mb-6">
             <SettingsIcon className="h-5 w-5" />
@@ -58,8 +61,8 @@ const Settings: React.FC = () => {
                   className={cn(
                     'w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                     activeTab === tab.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                      ? 'bg-accent text-white'
+                      : 'text-muted hover:text-text hover:bg-bg-elev2'
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -80,11 +83,25 @@ const Settings: React.FC = () => {
 };
 
 const AppearanceSettings: React.FC<{ theme: any; setTheme: (theme: any) => void }> = ({ theme, setTheme }) => {
+  const handleThemeChange = (updates: any) => {
+    const newTheme = { ...theme, ...updates };
+    setTheme(newTheme);
+    
+    // Apply theme changes to document
+    if (updates.mode) {
+      document.documentElement.setAttribute('data-theme', updates.mode);
+    }
+    
+    if (updates.accentColor) {
+      document.documentElement.style.setProperty('--accent', updates.accentColor);
+    }
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div>
         <h2 className="text-xl font-semibold mb-4">Appearance</h2>
-        <p className="text-muted-foreground mb-6">Customize how the application looks and feels.</p>
+        <p className="text-muted mb-6">Customize how the application looks and feels.</p>
       </div>
 
       <div className="space-y-6">
@@ -92,32 +109,36 @@ const AppearanceSettings: React.FC<{ theme: any; setTheme: (theme: any) => void 
           <label className="text-sm font-medium mb-3 block">Theme</label>
           <div className="grid grid-cols-2 gap-3">
             <button
-              onClick={() => setTheme({ mode: 'light' })}
+              onClick={() => handleThemeChange({ mode: 'light' })}
               className={cn(
-                'p-4 rounded-lg border-2 transition-colors',
+                'p-4 rounded-lg border-2 transition-colors text-left',
                 theme.mode === 'light'
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border hover:border-muted-foreground'
+                  ? 'border-accent bg-accent/5'
+                  : 'border-border hover:border-muted'
               )}
             >
               <div className="flex items-center space-x-3">
                 <div className="w-4 h-4 bg-white border border-gray-300 rounded"></div>
                 <span className="font-medium">Light</span>
+                {theme.mode === 'light' && <Check className="w-4 h-4 text-accent ml-auto" />}
               </div>
+              <p className="text-xs text-muted mt-1">Clean and bright interface</p>
             </button>
             <button
-              onClick={() => setTheme({ mode: 'dark' })}
+              onClick={() => handleThemeChange({ mode: 'dark' })}
               className={cn(
-                'p-4 rounded-lg border-2 transition-colors',
+                'p-4 rounded-lg border-2 transition-colors text-left',
                 theme.mode === 'dark'
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border hover:border-muted-foreground'
+                  ? 'border-accent bg-accent/5'
+                  : 'border-border hover:border-muted'
               )}
             >
               <div className="flex items-center space-x-3">
                 <div className="w-4 h-4 bg-gray-800 border border-gray-600 rounded"></div>
                 <span className="font-medium">Dark</span>
+                {theme.mode === 'dark' && <Check className="w-4 h-4 text-accent ml-auto" />}
               </div>
+              <p className="text-xs text-muted mt-1">Easy on the eyes</p>
             </button>
           </div>
         </div>
@@ -126,51 +147,100 @@ const AppearanceSettings: React.FC<{ theme: any; setTheme: (theme: any) => void 
           <label className="text-sm font-medium mb-3 block">Density</label>
           <div className="grid grid-cols-2 gap-3">
             <button
-              onClick={() => setTheme({ density: 'comfortable' })}
+              onClick={() => handleThemeChange({ density: 'comfortable' })}
               className={cn(
-                'p-4 rounded-lg border-2 transition-colors',
+                'p-4 rounded-lg border-2 transition-colors text-left',
                 theme.density === 'comfortable'
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border hover:border-muted-foreground'
+                  ? 'border-accent bg-accent/5'
+                  : 'border-border hover:border-muted'
               )}
             >
-              <div className="font-medium">Comfortable</div>
-              <div className="text-sm text-muted-foreground">More spacing</div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-medium flex items-center space-x-2">
+                    <Monitor className="w-4 h-4" />
+                    <span>Comfortable</span>
+                  </div>
+                  <div className="text-sm text-muted mt-1">More spacing between elements</div>
+                </div>
+                {theme.density === 'comfortable' && <Check className="w-4 h-4 text-accent" />}
+              </div>
             </button>
             <button
-              onClick={() => setTheme({ density: 'compact' })}
+              onClick={() => handleThemeChange({ density: 'compact' })}
               className={cn(
-                'p-4 rounded-lg border-2 transition-colors',
+                'p-4 rounded-lg border-2 transition-colors text-left',
                 theme.density === 'compact'
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border hover:border-muted-foreground'
+                  ? 'border-accent bg-accent/5'
+                  : 'border-border hover:border-muted'
               )}
             >
-              <div className="font-medium">Compact</div>
-              <div className="text-sm text-muted-foreground">Less spacing</div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-medium flex items-center space-x-2">
+                    <Smartphone className="w-4 h-4" />
+                    <span>Compact</span>
+                  </div>
+                  <div className="text-sm text-muted mt-1">Less spacing, more content</div>
+                </div>
+                {theme.density === 'compact' && <Check className="w-4 h-4 text-accent" />}
+              </div>
             </button>
           </div>
         </div>
 
         <div>
           <label className="text-sm font-medium mb-3 block">Accent Color</label>
-          <div className="grid grid-cols-6 gap-2">
+          <div className="grid grid-cols-8 gap-2">
             {[
-              '#3b82f6', '#ef4444', '#10b981', '#f59e0b', 
-              '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'
-            ].map((color) => (
+              { color: '#3b82f6', name: 'Blue' },
+              { color: '#ef4444', name: 'Red' },
+              { color: '#10b981', name: 'Green' },
+              { color: '#f59e0b', name: 'Amber' },
+              { color: '#8b5cf6', name: 'Purple' },
+              { color: '#ec4899', name: 'Pink' },
+              { color: '#06b6d4', name: 'Cyan' },
+              { color: '#84cc16', name: 'Lime' }
+            ].map(({ color, name }) => (
               <button
                 key={color}
-                onClick={() => setTheme({ accentColor: color })}
+                onClick={() => handleThemeChange({ accentColor: color })}
                 className={cn(
-                  'w-10 h-10 rounded-lg border-2 transition-all',
+                  'w-10 h-10 rounded-lg border-2 transition-all relative',
                   theme.accentColor === color
-                    ? 'border-foreground scale-110'
+                    ? 'border-text scale-110'
                     : 'border-border hover:scale-105'
                 )}
                 style={{ backgroundColor: color }}
-              />
+                title={name}
+              >
+                {theme.accentColor === color && (
+                  <Check className="w-4 h-4 text-white absolute inset-0 m-auto" />
+                )}
+              </button>
             ))}
+          </div>
+          <p className="text-xs text-muted mt-2">
+            Current color: {theme.accentColor}
+          </p>
+        </div>
+
+        <div className="pt-4 border-t border-border">
+          <h3 className="text-sm font-medium mb-2">Preview</h3>
+          <div className="p-4 rounded-lg border border-border bg-bg-elev1">
+            <div className="flex items-center space-x-3 mb-3">
+              <div 
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: theme.accentColor }}
+              />
+              <span className="font-medium">Sample Task</span>
+              <span className="text-xs px-2 py-1 rounded-full bg-bg-elev2 text-muted">
+                {theme.density}
+              </span>
+            </div>
+            <p className="text-sm text-muted">
+              This is how your content will look with the current settings.
+            </p>
           </div>
         </div>
       </div>
@@ -185,88 +255,208 @@ const NotificationSettings: React.FC = () => {
     clientNotifications: false,
     systemAlerts: true,
     emailDigest: true,
+    soundEnabled: true,
+    desktopNotifications: true,
   });
+
+  const handleSettingChange = (key: string, value: boolean) => {
+    setSettings(prev => ({ ...prev, [key]: value }));
+  };
 
   return (
     <div className="p-6 space-y-6">
       <div>
         <h2 className="text-xl font-semibold mb-4">Notifications</h2>
-        <p className="text-muted-foreground mb-6">Manage when and how you receive notifications.</p>
+        <p className="text-muted mb-6">Manage when and how you receive notifications.</p>
       </div>
 
       <div className="space-y-4">
-        {Object.entries(settings).map(([key, value]) => (
-          <div key={key} className="flex items-center justify-between p-4 border border-border rounded-lg">
-            <div>
-              <div className="font-medium">
-                {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {getNotificationDescription(key)}
-              </div>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={value}
-                onChange={(e) => setSettings({ ...settings, [key]: e.target.checked })}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-            </label>
+        <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+          <div>
+            <div className="font-medium">Task Reminders</div>
+            <div className="text-sm text-muted">Get notified about upcoming task deadlines</div>
           </div>
-        ))}
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={settings.taskReminders}
+              onChange={(e) => handleSettingChange('taskReminders', e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+          </label>
+        </div>
+
+        <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+          <div>
+            <div className="font-medium">Project Updates</div>
+            <div className="text-sm text-muted">Notifications for project status changes</div>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={settings.projectUpdates}
+              onChange={(e) => handleSettingChange('projectUpdates', e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+          </label>
+        </div>
+
+        <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+          <div>
+            <div className="font-medium">Client Notifications</div>
+            <div className="text-sm text-muted">Updates about client interactions</div>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={settings.clientNotifications}
+              onChange={(e) => handleSettingChange('clientNotifications', e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+          </label>
+        </div>
+
+        <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+          <div>
+            <div className="font-medium">System Alerts</div>
+            <div className="text-sm text-muted">Important system messages and updates</div>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={settings.systemAlerts}
+              onChange={(e) => handleSettingChange('systemAlerts', e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+          </label>
+        </div>
+
+        <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+          <div>
+            <div className="font-medium">Desktop Notifications</div>
+            <div className="text-sm text-muted">Show notifications on your desktop</div>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={settings.desktopNotifications}
+              onChange={(e) => handleSettingChange('desktopNotifications', e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+          </label>
+        </div>
+
+        <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+          <div>
+            <div className="font-medium">Sound Notifications</div>
+            <div className="text-sm text-muted">Play sounds for notifications</div>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={settings.soundEnabled}
+              onChange={(e) => handleSettingChange('soundEnabled', e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+          </label>
+        </div>
       </div>
     </div>
   );
 };
 
 const DataSettings: React.FC = () => {
+  const { exportData, importData, resetData } = useAppStore();
+
+  const handleExport = () => {
+    exportData();
+  };
+
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target?.result as string);
+          importData(data);
+        } catch (error) {
+          console.error('Failed to import data:', error);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const handleReset = () => {
+    if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
+      resetData();
+    }
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div>
         <h2 className="text-xl font-semibold mb-4">Data & Backup</h2>
-        <p className="text-muted-foreground mb-6">Manage your data, backups, and storage.</p>
+        <p className="text-muted mb-6">Manage your application data and backups.</p>
       </div>
 
       <div className="space-y-4">
-        <div className="p-4 border border-border rounded-lg">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-medium">Export Data</h3>
-            <Download className="h-4 w-4" />
+        <div className="p-4 rounded-lg border border-border">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium">Export Data</div>
+              <div className="text-sm text-muted">Download all your data as a JSON file</div>
+            </div>
+            <button
+              onClick={handleExport}
+              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 flex items-center space-x-2"
+            >
+              <Download className="w-4 h-4" />
+              <span>Export</span>
+            </button>
           </div>
-          <p className="text-sm text-muted-foreground mb-3">
-            Download all your data as a JSON file for backup or migration.
-          </p>
-          <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
-            Export All Data
-          </button>
         </div>
 
-        <div className="p-4 border border-border rounded-lg">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-medium">Import Data</h3>
-            <Upload className="h-4 w-4" />
+        <div className="p-4 rounded-lg border border-border">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium">Import Data</div>
+              <div className="text-sm text-muted">Restore data from a JSON backup file</div>
+            </div>
+            <label className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 flex items-center space-x-2 cursor-pointer">
+              <Upload className="w-4 h-4" />
+              <span>Import</span>
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleImport}
+                className="hidden"
+              />
+            </label>
           </div>
-          <p className="text-sm text-muted-foreground mb-3">
-            Import data from a previously exported JSON file.
-          </p>
-          <button className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90">
-            Import Data
-          </button>
         </div>
 
-        <div className="p-4 border border-destructive/50 rounded-lg bg-destructive/5">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-medium text-destructive">Clear All Data</h3>
-            <Trash2 className="h-4 w-4 text-destructive" />
+        <div className="p-4 rounded-lg border border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium text-red-800 dark:text-red-200">Reset All Data</div>
+              <div className="text-sm text-red-600 dark:text-red-300">Permanently delete all application data</div>
+            </div>
+            <button
+              onClick={handleReset}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center space-x-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Reset</span>
+            </button>
           </div>
-          <p className="text-sm text-muted-foreground mb-3">
-            Permanently delete all your data. This action cannot be undone.
-          </p>
-          <button className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90">
-            Clear All Data
-          </button>
         </div>
       </div>
     </div>
@@ -275,29 +465,31 @@ const DataSettings: React.FC = () => {
 
 const ShortcutSettings: React.FC = () => {
   const shortcuts = [
+    { key: 'Ctrl+K', description: 'Open search' },
     { key: 'Ctrl+N', description: 'Create new task' },
-    { key: 'Ctrl+K', description: 'Open command palette' },
-    { key: 'Ctrl+/', description: 'Toggle sidebar' },
-    { key: 'Ctrl+Shift+D', description: 'Toggle dark mode' },
-    { key: 'Ctrl+1', description: 'Go to Dashboard' },
-    { key: 'Ctrl+2', description: 'Go to Tasks' },
-    { key: 'Ctrl+3', description: 'Go to Projects' },
-    { key: 'Ctrl+4', description: 'Go to Clients' },
+    { key: 'Ctrl+P', description: 'Create new project' },
+    { key: 'Ctrl+Shift+C', description: 'Create new client' },
     { key: 'Escape', description: 'Close drawer/modal' },
+    { key: 'Ctrl+/', description: 'Show keyboard shortcuts' },
+    { key: 'Ctrl+,', description: 'Open settings' },
+    { key: 'Ctrl+B', description: 'Toggle sidebar' },
   ];
 
   return (
     <div className="p-6 space-y-6">
       <div>
         <h2 className="text-xl font-semibold mb-4">Keyboard Shortcuts</h2>
-        <p className="text-muted-foreground mb-6">Learn keyboard shortcuts to work more efficiently.</p>
+        <p className="text-muted mb-6">Speed up your workflow with keyboard shortcuts.</p>
       </div>
 
       <div className="space-y-2">
         {shortcuts.map((shortcut, index) => (
-          <div key={index} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50">
+          <div
+            key={index}
+            className="flex items-center justify-between p-3 rounded-lg hover:bg-bg-elev1"
+          >
             <span className="text-sm">{shortcut.description}</span>
-            <kbd className="px-2 py-1 text-xs font-mono bg-muted border border-border rounded">
+            <kbd className="px-2 py-1 text-xs font-mono bg-bg-elev2 border border-border rounded">
               {shortcut.key}
             </kbd>
           </div>
@@ -306,17 +498,6 @@ const ShortcutSettings: React.FC = () => {
     </div>
   );
 };
-
-function getNotificationDescription(key: string): string {
-  const descriptions: Record<string, string> = {
-    taskReminders: 'Get notified about upcoming task deadlines',
-    projectUpdates: 'Receive updates when project status changes',
-    clientNotifications: 'Get alerts for client-related activities',
-    systemAlerts: 'Important system messages and updates',
-    emailDigest: 'Daily summary of your activities via email',
-  };
-  return descriptions[key] || '';
-}
 
 export default Settings;
 
