@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import type {
   Client,
   Project,
@@ -13,7 +14,7 @@ import type {
   SearchResult,
 } from '@/types';
 
-// Mock data
+// Mock data - only used for initial setup if no data exists
 const mockClients: Client[] = [
   {
     id: '1',
@@ -29,7 +30,7 @@ const mockClients: Client[] = [
         isPrimary: true,
       }
     ],
-    links: [],  // Add this line
+    links: [],
     nextStep: 'Schedule quarterly review meeting',
     nextStepDue: new Date('2024-01-15').toISOString(),
     createdAt: new Date('2023-12-01').toISOString(),
@@ -49,7 +50,7 @@ const mockClients: Client[] = [
         isPrimary: true,
       }
     ],
-    links: [],  // Add this line
+    links: [],
     nextStep: 'Follow up on proposal',
     nextStepDue: new Date('2024-01-10').toISOString(),
     createdAt: new Date('2023-11-15').toISOString(),
@@ -148,7 +149,7 @@ const mockOpportunities: Opportunity[] = [
   }
 ];
 
-// Main application store
+// Main application store interface
 interface AppStore {
   // Data
   clients: Client[];
@@ -194,6 +195,12 @@ interface AppStore {
   updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   
+  // Note actions
+  loadNotes: () => Promise<void>;
+  createNote: (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  updateNote: (id: string, updates: Partial<Note>) => Promise<void>;
+  deleteNote: (id: string) => Promise<void>;
+  
   // Theme actions
   setTheme: (theme: Partial<Theme>) => void;
   toggleTheme: () => void;
@@ -201,9 +208,19 @@ interface AppStore {
   // Search actions
   search: (query: string) => Promise<void>;
   clearSearch: () => void;
+  
+  // Data management
+  exportData: () => void;
+  importData: (data: any) => void;
+  resetData: () => void;
 }
-export const useAppStore = create<AppStore>(
-  (set) => ({
+
+// Helper function to generate unique IDs
+const generateId = () => Date.now().toString() + Math.random().toString(36).substr(2, 9);
+
+export const useAppStore = create<AppStore>()(
+  persist(
+    (set, get) => ({
       // Initial state
       clients: [],
       projects: [],
@@ -239,16 +256,21 @@ export const useAppStore = create<AppStore>(
         
         try {
           // Simulate loading delay
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise(resolve => setTimeout(resolve, 500));
           
-          // Load mock data
-          set({
-            clients: mockClients,
-            projects: mockProjects,
-            tasks: mockTasks,
-            opportunities: mockOpportunities,
-            loading: false,
-          });
+          const state = get();
+          
+          // If no data exists (first run), load mock data
+          if (state.clients.length === 0 && state.projects.length === 0 && state.tasks.length === 0) {
+            set({
+              clients: mockClients,
+              projects: mockProjects,
+              tasks: mockTasks,
+              opportunities: mockOpportunities,
+            });
+          }
+          
+          set({ loading: false });
         } catch (error) {
           set({ 
             error: error instanceof Error ? error.message : 'Failed to initialize app',
@@ -257,12 +279,12 @@ export const useAppStore = create<AppStore>(
         }
       },
       
-  openDrawer: (content) => {
-    const drawerContent = typeof content === 'string' 
-      ? { type: content } 
-      : content;
-    set({ drawerOpen: true, drawerContent });
-  },
+      openDrawer: (content) => {
+        const drawerContent = typeof content === 'string' 
+          ? { type: content } 
+          : content;
+        set({ drawerOpen: true, drawerContent });
+      },
       
       closeDrawer: () => {
         set({ drawerOpen: false, drawerContent: null });
@@ -270,13 +292,13 @@ export const useAppStore = create<AppStore>(
       
       // Client actions
       loadClients: async () => {
-        set({ clients: mockClients });
+        // Data is already loaded from localStorage via persist middleware
       },
       
       createClient: async (clientData) => {
         const newClient: Client = {
           ...clientData,
-          id: Date.now().toString(),
+          id: generateId(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -304,13 +326,13 @@ export const useAppStore = create<AppStore>(
       
       // Project actions
       loadProjects: async () => {
-        set({ projects: mockProjects });
+        // Data is already loaded from localStorage via persist middleware
       },
       
       createProject: async (projectData) => {
         const newProject: Project = {
           ...projectData,
-          id: Date.now().toString(),
+          id: generateId(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -338,13 +360,13 @@ export const useAppStore = create<AppStore>(
       
       // Task actions
       loadTasks: async () => {
-        set({ tasks: mockTasks });
+        // Data is already loaded from localStorage via persist middleware
       },
       
       createTask: async (taskData) => {
         const newTask: Task = {
           ...taskData,
-          id: Date.now().toString(),
+          id: generateId(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -370,31 +392,82 @@ export const useAppStore = create<AppStore>(
         }));
       },
       
+      // Note actions
+      loadNotes: async () => {
+        // Data is already loaded from localStorage via persist middleware
+      },
+      
+      createNote: async (noteData) => {
+        const newNote: Note = {
+          ...noteData,
+          id: generateId(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        
+        set(state => ({
+          notes: [...state.notes, newNote]
+        }));
+      },
+      
+      updateNote: async (id, updates) => {
+        set(state => ({
+          notes: state.notes.map(note =>
+            note.id === id
+              ? { ...note, ...updates, updatedAt: new Date().toISOString() }
+              : note
+          )
+        }));
+      },
+      
+      deleteNote: async (id) => {
+        set(state => ({
+          notes: state.notes.filter(note => note.id !== id)
+        }));
+      },
+      
       // Theme actions
       setTheme: (themeUpdates) => {
         set(state => ({
           theme: { ...state.theme, ...themeUpdates }
         }));
+        
+        // Apply theme to document
+        const theme = { ...get().theme, ...themeUpdates };
+        document.documentElement.setAttribute('data-theme', theme.mode);
       },
       
       toggleTheme: () => {
+        const currentMode = get().theme.mode;
+        const newMode = currentMode === 'light' ? 'dark' : 'light';
+        
         set(state => ({
           theme: {
             ...state.theme,
-            mode: state.theme.mode === 'light' ? 'dark' : 'light'
+            mode: newMode
           }
         }));
+        
+        // Apply theme to document
+        document.documentElement.setAttribute('data-theme', newMode);
       },
       
       // Search actions
       search: async (query) => {
-        // Mock search implementation
+        if (!query.trim()) {
+          set({ searchResults: [] });
+          return;
+        }
+        
+        const state = get();
         const results: SearchResult[] = [];
+        const lowerQuery = query.toLowerCase();
         
         // Search tasks
-        mockTasks.forEach(task => {
-          if (task.title.toLowerCase().includes(query.toLowerCase()) ||
-              task.description?.toLowerCase().includes(query.toLowerCase())) {
+        state.tasks.forEach(task => {
+          if (task.title.toLowerCase().includes(lowerQuery) ||
+              task.description?.toLowerCase().includes(lowerQuery) ||
+              task.tags.some(tag => tag.toLowerCase().includes(lowerQuery))) {
             results.push({
               id: task.id,
               type: 'task',
@@ -406,9 +479,10 @@ export const useAppStore = create<AppStore>(
         });
         
         // Search projects
-        mockProjects.forEach(project => {
-          if (project.title.toLowerCase().includes(query.toLowerCase()) ||
-              project.description?.toLowerCase().includes(query.toLowerCase())) {
+        state.projects.forEach(project => {
+          if (project.title.toLowerCase().includes(lowerQuery) ||
+              project.description?.toLowerCase().includes(lowerQuery) ||
+              project.tags.some(tag => tag.toLowerCase().includes(lowerQuery))) {
             results.push({
               id: project.id,
               type: 'project',
@@ -419,12 +493,119 @@ export const useAppStore = create<AppStore>(
           }
         });
         
+        // Search clients
+        state.clients.forEach(client => {
+          if (client.name.toLowerCase().includes(lowerQuery) ||
+              client.tags.some(tag => tag.toLowerCase().includes(lowerQuery))) {
+            results.push({
+              id: client.id,
+              type: 'client',
+              title: client.name,
+              description: client.nextStep,
+              relevance: 0.6,
+            });
+          }
+        });
+        
+        // Search notes
+        state.notes.forEach(note => {
+          if (note.title.toLowerCase().includes(lowerQuery) ||
+              note.content?.toLowerCase().includes(lowerQuery) ||
+              note.tags?.some(tag => tag.toLowerCase().includes(lowerQuery))) {
+            results.push({
+              id: note.id,
+              type: 'note',
+              title: note.title,
+              description: note.content?.substring(0, 100),
+              relevance: 0.5,
+            });
+          }
+        });
+        
+        // Sort by relevance
+        results.sort((a, b) => b.relevance - a.relevance);
+        
         set({ searchResults: results });
       },
       
       clearSearch: () => {
         set({ searchResults: [] });
       },
+      
+      // Data management
+      exportData: () => {
+        const state = get();
+        const data = {
+          clients: state.clients,
+          projects: state.projects,
+          tasks: state.tasks,
+          notes: state.notes,
+          opportunities: state.opportunities,
+          stakeholders: state.stakeholders,
+          timeEntries: state.timeEntries,
+          knowledgeItems: state.knowledgeItems,
+          theme: state.theme,
+          exportedAt: new Date().toISOString(),
+        };
+        
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `desktop-planner-backup-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      },
+      
+      importData: (data) => {
+        try {
+          set({
+            clients: data.clients || [],
+            projects: data.projects || [],
+            tasks: data.tasks || [],
+            notes: data.notes || [],
+            opportunities: data.opportunities || [],
+            stakeholders: data.stakeholders || [],
+            timeEntries: data.timeEntries || [],
+            knowledgeItems: data.knowledgeItems || [],
+            theme: data.theme || get().theme,
+          });
+        } catch (error) {
+          set({ error: 'Failed to import data. Please check the file format.' });
+        }
+      },
+      
+      resetData: () => {
+        set({
+          clients: [],
+          projects: [],
+          tasks: [],
+          notes: [],
+          opportunities: [],
+          stakeholders: [],
+          timeEntries: [],
+          knowledgeItems: [],
+          searchResults: [],
+        });
+      },
     }),
+    {
+      name: 'desktop-planner-storage',
+      // Only persist data, not UI state
+      partialize: (state) => ({
+        clients: state.clients,
+        projects: state.projects,
+        tasks: state.tasks,
+        notes: state.notes,
+        opportunities: state.opportunities,
+        stakeholders: state.stakeholders,
+        timeEntries: state.timeEntries,
+        knowledgeItems: state.knowledgeItems,
+        theme: state.theme,
+      }),
+    }
+  )
 );
 

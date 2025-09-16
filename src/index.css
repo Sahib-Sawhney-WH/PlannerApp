@@ -37,7 +37,7 @@
 }
 
 [data-theme="dark"] {
-  /* Dark theme colors */
+  /* Dark theme colors - Fixed for better visibility */
   --bg: 240 10% 4%;
   --bg-elev1: 240 6% 10%;
   --bg-elev2: 240 5% 16%;
@@ -48,9 +48,9 @@
   --success: 142 76% 36%;
   --warn: 38 92% 50%;
   --danger: 0 84% 60%;
-  --border: 240 6% 16%;
+  --border: 240 6% 20%;
   --ring: 240 5% 26%;
-  --card: 240 6% 10%;
+  --card: 240 6% 12%;
   
   /* Tag colors */
   --tag-impl: 142 76% 36%;
@@ -102,9 +102,11 @@
     @apply flex h-10 w-full rounded-lg border border-border bg-bg-elev1 px-3 py-2 text-sm ring-offset-bg file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   
-  /* Card styles */
+  /* Card styles - Fixed transparency */
   .card {
     @apply rounded-lg border border-border bg-card p-6 shadow-sm;
+    background-color: hsl(var(--card)) !important;
+    opacity: 1 !important;
   }
   
   /* Tag styles */
@@ -158,9 +160,12 @@
     @apply h-11 p-2;
   }
   
-  /* Sidebar styles */
+  /* Sidebar styles - Fixed transparency issues */
   .sidebar {
-    @apply flex flex-col bg-bg-elev1 border-r border-border transition-all duration-200;
+    @apply flex flex-col border-r border-border transition-all duration-200;
+    background-color: hsl(var(--bg-elev1)) !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
   }
   
   .sidebar.collapsed {
@@ -171,9 +176,12 @@
     @apply w-60;
   }
   
-  /* Drawer styles */
+  /* Drawer styles - Fixed transparency issues */
   .drawer {
-    @apply fixed right-0 top-0 h-full w-120 bg-bg-elev1 border-l border-border shadow-lg transform transition-transform duration-200 z-50;
+    @apply fixed right-0 top-0 h-full w-120 border-l border-border shadow-lg transform transition-transform duration-200 z-50;
+    background-color: hsl(var(--bg-elev1)) !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
   }
   
   .drawer.open {
@@ -184,10 +192,92 @@
     @apply translate-x-full;
   }
   
+  /* Modal overlay - Fixed dimming issue */
+  .modal-overlay {
+    @apply fixed inset-0 z-40;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(2px);
+  }
+  
+  /* Search results container - Fixed transparency */
+  .search-results {
+    @apply absolute top-full left-0 right-0 mt-1 max-h-96 overflow-y-auto rounded-lg border border-border shadow-lg z-50;
+    background-color: hsl(var(--bg-elev1)) !important;
+    opacity: 1 !important;
+  }
+  
+  .search-result-item {
+    @apply p-3 hover:bg-bg-elev2 cursor-pointer border-b border-border last:border-b-0;
+    background-color: transparent;
+  }
+  
+  .search-result-item:hover {
+    background-color: hsl(var(--bg-elev2)) !important;
+  }
+  
+  /* Dropdown menus - Fixed transparency */
+  .dropdown-menu {
+    @apply absolute z-50 min-w-32 rounded-lg border border-border shadow-lg;
+    background-color: hsl(var(--bg-elev1)) !important;
+    opacity: 1 !important;
+  }
+  
+  .dropdown-item {
+    @apply px-3 py-2 text-sm cursor-pointer hover:bg-bg-elev2 first:rounded-t-lg last:rounded-b-lg;
+  }
+  
+  /* Form elements - Better visibility */
+  .form-group {
+    @apply space-y-2;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-text;
+  }
+  
+  .form-input {
+    @apply w-full px-3 py-2 border border-border rounded-lg bg-bg-elev1 text-text placeholder-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent;
+  }
+  
+  .form-textarea {
+  @apply w-full px-3 py-2 border border-border rounded-lg bg-bg-elev1 text-text placeholder-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent resize-y min-h-20;
+  }
+
+  
+  .form-select {
+    @apply w-full px-3 py-2 border border-border rounded-lg bg-bg-elev1 text-text focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent;
+  }
+  
+  /* Navigation items - Better visibility */
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-text hover:bg-bg-elev2 transition-colors;
+  }
+  
+  .nav-item.active {
+    @apply bg-accent/10 text-accent;
+  }
+  
+  /* Top bar - Fixed transparency */
+  .top-bar {
+    @apply flex items-center justify-between px-6 py-4 border-b border-border;
+    background-color: hsl(var(--bg)) !important;
+    opacity: 1 !important;
+  }
+  
+  /* Content area - Proper background */
+  .content-area {
+    @apply flex-1 overflow-hidden;
+    background-color: hsl(var(--bg)) !important;
+  }
+  
+  .content-inner {
+    @apply h-full p-6 overflow-y-auto;
+  }
+  
   /* Scrollbar styles */
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: var(--border) var(--bg-elev1);
+    scrollbar-color: hsl(var(--border)) hsl(var(--bg-elev1));
   }
   
   .scrollbar-thin::-webkit-scrollbar {
@@ -196,16 +286,93 @@
   }
   
   .scrollbar-thin::-webkit-scrollbar-track {
-    background: var(--bg-elev1);
+    background: hsl(var(--bg-elev1));
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: var(--border);
+    background: hsl(var(--border));
     border-radius: 3px;
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: var(--ring);
+    background: hsl(var(--ring));
   }
+  
+  /* Fix for any remaining transparency issues */
+  .bg-transparent {
+    background-color: transparent !important;
+  }
+  
+  /* Ensure all text is visible */
+  .text-transparent {
+    color: hsl(var(--text)) !important;
+  }
+  
+  /* Loading states */
+  .loading-spinner {
+    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-accent;
+  }
+  
+  /* Error states */
+  .error-message {
+    @apply p-4 rounded-lg bg-danger/10 border border-danger/20 text-danger;
+  }
+  
+  /* Success states */
+  .success-message {
+    @apply p-4 rounded-lg bg-success/10 border border-success/20 text-success;
+  }
+  
+  /* Warning states */
+  .warning-message {
+    @apply p-4 rounded-lg bg-warn/10 border border-warn/20 text-warn;
+  }
+  
+  /* Info states */
+  .info-message {
+    @apply p-4 rounded-lg bg-accent/10 border border-accent/20 text-accent;
+  }
+}
+
+/* Additional fixes for specific components that might have transparency issues */
+.drawer-content {
+  background-color: hsl(var(--bg-elev1)) !important;
+  opacity: 1 !important;
+}
+
+.sidebar-content {
+  background-color: hsl(var(--bg-elev1)) !important;
+  opacity: 1 !important;
+}
+
+.modal-content {
+  background-color: hsl(var(--bg-elev1)) !important;
+  opacity: 1 !important;
+}
+
+.search-input {
+  background-color: hsl(var(--bg-elev1)) !important;
+  color: hsl(var(--text)) !important;
+}
+
+.search-input::placeholder {
+  color: hsl(var(--muted)) !important;
+}
+
+/* Ensure proper z-index layering */
+.z-drawer {
+  z-index: 1000;
+}
+
+.z-modal {
+  z-index: 1100;
+}
+
+.z-dropdown {
+  z-index: 1200;
+}
+
+.z-tooltip {
+  z-index: 1300;
 }
 
